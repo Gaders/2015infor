@@ -1,7 +1,11 @@
-var a = 5
 
 
-function loadXMLDoc(a){
+
+var startPage = 5
+
+
+var Ajax= {
+ajax:function(obj){
     var xml = null
     if(window.XMLHttpRequest)
     {
@@ -10,56 +14,23 @@ function loadXMLDoc(a){
     else{
         xml=new ActiveXObject();
     }
-    
-
-
-
-   
-   
-   
-    xml.onreadystatechange=function(){
-     
+    if(obj.type=='get'){
+    xml.open(obj.type,obj.url+obj.data);
+    xml.send();
+}  
+ xml.onreadystatechange=function(){
         if(xml.readyState==4&&xml.status==200){
-           var n = xml.responseText
-         
-           var n1 = JSON.parse(n)
-           
-        
-              var str = JSON.stringify(n1.result)
-              
-        var zhuanHuan1 = str.replace(/,{"/g,"<br>")
-        var zhuanhuan2 = zhuanHuan1.replace(/"}/g,"</br>")  
-        var zhuanHuan3= zhuanhuan2.replace("[","")
-        var zhuanHuan4= zhuanHuan3.replace("]","")
-        var zhuanHuan5= zhuanHuan4.replace('{"',"")
-        var zhuanHuan6= zhuanHuan5.replace(/class_num/g,"班级代号")
-        var zhuanHuan7= zhuanHuan6.replace(/gender/g,"性别")
-        var zhuanHuan8= zhuanHuan7.replace(/major/g,"专业")
-        var zhuanHuan9= zhuanHuan8.replace(/name/g,"姓名")
-        var zhuanHuan10= zhuanHuan9.replace(/student_num/g,"学号")
-        var zhuanHuan11= zhuanHuan10.replace(/"/g,"")
-        var zhuanHuan12= zhuanHuan11.replace(/,/g,"&nbsp;&nbsp;&nbsp;")
-        var first = document.getElementById("first")
-        first.innerHTML=zhuanHuan12
-           
-            
-            
+        var n = xml.responseText
+          obj.success(n)  ;
         }
-    }   
-
-
-
-   
-     
-         xml.open("GET","https://api.tumiv.com/v2/cqupt/student?year=2015&page="+a);
-         xml.send();
-
-
-
-
+        else if(xml.status==400) {
+            obj.error() 
+        }    
+        }
     }
- 
- 
+}
+
+
  
 window.onload = function() { 
 var btn1 = document.querySelector("#btnZuo")
@@ -72,7 +43,22 @@ btn1.addEventListener("click",function(){
          var p1 = document.getElementById("p1")
          p1.textContent="当前页数:"+a
 
-         loadXMLDoc(a)}
+         Ajax.ajax({
+            type: "get",
+            url: "https://api.tumiv.com/v2/cqupt/student",
+            data: "?year=2015&page="+a,
+            success:function(n){
+       
+                var n1 = JSON.parse(n)
+             var str = JSON.stringify(n1.result)     
+             var zhuanHuan1 = str.replace(/{/g,"<br>").replace(/,{"/g,"").replace(/"}/g,"</br>").replace("[","").replace("]","").replace(/class_num/g,"班级代号").replace(/gender/g,"性别").replace(/major/g,"专业").replace(/name/g,"姓名").replace(/"/g,"").replace(/,/g,"&nbsp;&nbsp;&nbsp;").replace(/student_num/g,"学号")
+             var first = document.getElementById("first")
+             first.innerHTML=zhuanHuan1
+            },
+            error:function(){
+                alert("这里有一些难以言喻的错误发生了呢")
+            }
+        });}
 
 
          else{
@@ -91,14 +77,42 @@ btn2.addEventListener("click",function(){
          var p1 = document.getElementById("p1")
          p1.textContent="当前页数:"+a
 
-         loadXMLDoc(a)
+         Ajax.ajax({
+            type: "get",
+            url: "https://api.tumiv.com/v2/cqupt/student",
+            data: "?year=2015&page="+a,
+            success:function(n){
+             var n1 = JSON.parse(n)
+             var str = JSON.stringify(n1.result)     
+             var zhuanHuan1 = str.replace(/{/g,"<br>").replace(/,{"/g,"").replace(/"}/g,"</br>").replace("[","").replace("]","").replace(/class_num/g,"班级代号").replace(/gender/g,"性别").replace(/major/g,"专业").replace(/name/g,"姓名").replace(/"/g,"").replace(/,/g,"&nbsp;&nbsp;&nbsp;").replace(/student_num/g,"学号")
+             var first = document.getElementById("first")
+             first.innerHTML=zhuanHuan1
+            },
+            error:function(){
+                alert("这里有一些难以言喻的错误发生了呢")
+            }
+        });
         }
         else if(a==1 ){
           a =2
           var p1 = document.getElementById("p1")
          p1.textContent="当前页数:"+a
 
-          loadXMLDoc(a)
+         Ajax.ajax({
+            type: "get",
+            url: "https://api.tumiv.com/v2/cqupt/student",
+            data: "?year=2015&page="+a,
+            success:function(n){
+             var n1 = JSON.parse(n)
+             var str = JSON.stringify(n1.result)     
+             var zhuanHuan1 = str.replace(/{/g,"<br>").replace(/,{"/g,"").replace(/"}/g,"</br>").replace("[","").replace("]","").replace(/class_num/g,"班级代号").replace(/gender/g,"性别").replace(/major/g,"专业").replace(/name/g,"姓名").replace(/"/g,"").replace(/,/g,"&nbsp;&nbsp;&nbsp;").replace(/student_num/g,"学号")
+             var first = document.getElementById("first")
+             first.innerHTML=zhuanHuan1
+            },
+            error:function(){
+                alert("这里有一些难以言喻的错误发生了呢")
+            }
+        });
         }
 
          else{
@@ -107,17 +121,34 @@ btn2.addEventListener("click",function(){
  })
 
 
- loadXMLDoc(a)
+//ajax 的封装后的调用
+Ajax.ajax({
+    type: "get",
+    url:  "https://api.tumiv.com/v2/cqupt/student",
+    data: "?year=2015&page="+startPage,
+    success:function(n){  
+      var n1 = JSON.parse(n)
+      var str = JSON.stringify(n1.result)     
+      var zhuanHuan1 = str.replace(/{/g,"<br>").replace(/,{"/g,"").replace(/"}/g,"</br>").replace("[","").replace("]","").replace(/class_num/g,"班级代号").replace(/gender/g,"性别").replace(/major/g,"专业").replace(/name/g,"姓名").replace(/"/g,"").replace(/,/g,"&nbsp;&nbsp;&nbsp;").replace(/student_num/g,"学号")
+      var first = document.getElementById("first")
+      first.innerHTML=zhuanHuan1
+    },
+    error:function(){
+        alert("这里有一些难以言喻的错误发生了呢")
+    }
+});
 
 
 
-
-
-
-
-
+function rem() {
+    var width = docEl.getBoundingClientRect().width;
+var rem = width * 100 / designWidth;
+docEl.style.fontSize = rem + "px";
 }
- 
+rem()
+
+
+} 
  
 
 
